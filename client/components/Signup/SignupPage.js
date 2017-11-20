@@ -2,6 +2,7 @@ import React from 'react';
 import SignupForm from './SignupForm';
 import { connect } from 'react-redux';
 import { userSignupRequest } from '../../actions/signupActions';
+import PropTypes from 'prop-types';
 
 class SignupPage extends React.Component{
 	render() {

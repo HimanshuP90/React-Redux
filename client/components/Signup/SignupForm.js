@@ -2,6 +2,8 @@ import React from 'react';
 import timezones from '../../data/timezone';
 import map from 'lodash/map';
 import classnames from'classnames';
+import PropTypes from 'prop-types';
+import validateInput from '../../../server/shared/validations/signup';
 
 class SignupForm extends React.Component{
 	constructor(props){
@@ -26,22 +28,36 @@ class SignupForm extends React.Component{
 		})
 	}
 
+	isValid() {
+		const { errors, isValid } = validateInput(this.state);
+	
+		if (!isValid) {
+			this.setState({ errors });
+		}	
+
+		return isValid;
+	}
+
 	onSubmit(e) {
-		this.setState({ errors: {}, isLoading: true });
-		e.preventDefault()
-		this.props.userSignupRequest(this.state).then(
-			() => {},
-			(error) => {this.setState({ errors: error.response.data})}
-		)
+		e.preventDefault()		
+		
+		if (this.isValid()) {
+			this.setState({ errors: {}, isLoading: true });
+			this.props.userSignupRequest(this.state).then(
+				() => {},
+				(error) => {this.setState({ errors: error.response.data})}
+			)
+		}
 	}
 
 	render() {
 			
 			const { errors } = this.state;
-		    const options = map(timezones, (val, key) => {
+
+		    const options = map(timezones, (val, key) =>
 		      <option key={val} value={val}>{key}</option>
-		    });
-		    
+		    );
+
     		return (
 			<form onSubmit={this.onSubmit}>
 				<h1>Create an account .. !</h1>
